@@ -26,11 +26,12 @@ Route::group(['prefix' => 'v1'], function() {
     Route::middleware('auth:api')->group(function() {
         Route::post('/logout', [AuthController::class, 'logout']);
 
-        Route::group(['prefix' =>'task'], function() {
+        Route::group(['prefix' =>'tasks'], function() {
             Route::get('', [TaskController::class, 'index']);
+            Route::post('', [TaskController::class, 'create']);
+
             Route::group(['prefix' =>'{task}'], function() {
                 Route::get('', [TaskController::class, 'show']);
-                Route::post('', [TaskController::class, 'create']);
                 Route::put('', [TaskController::class, 'update']);
                 Route::delete('', [TaskController::class, 'delete']);
             });

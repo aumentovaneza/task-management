@@ -34,8 +34,8 @@ class TaskController extends Controller
      */
     public function create(CreateTaskRequest $request): JsonResponse
     {
-        $requestData = array($request->safe()->all());
-        $requestData['user_id'] = auth()->user->id;
+        $requestData = $request->safe()->all();
+        $requestData['user_id'] = auth()->user()->id;
 
         $newTask = Task::create($requestData);
 
@@ -49,10 +49,10 @@ class TaskController extends Controller
      */
     public function update(UpdateTaskRequest $request, Task $task): JsonResponse
     {
-        $requestData = array($request->safe()->all());
+        $requestData = $request->safe()->all();
         $task->update($requestData);
 
-        return response()->json(TaskResource::make($task), 201);
+        return response()->json(TaskResource::make($task->refresh()), 201);
 
     }
 
