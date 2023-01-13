@@ -17,25 +17,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::group(['prefix' => 'v1'], function() {
+    Route::group(['middleware' => ['cors', 'json.response']], function() {
+        Route::post('/register', [RegisterController::class,'register']);
+        Route::post('/login', [AuthController::class, 'login']);
+    });
 
-Route::group(['middleware' => ['cors', 'json.response']], function() {
-    Route::post('/register', [RegisterController::class,'register']);
-    Route::post('/login', [AuthController::class, 'login']);
-});
+    Route::middleware('auth:api')->group(function() {
+        Route::post('/logout', [AuthController::class, 'logout']);
 
-Route::middleware('auth:api')->group(function() {
-    Route::post('/logout', [AuthController::class, 'logout']);
-
-    Route::group(['prefix' =>'task'], function() {
-        Route::get('', [TaskController::class, 'index']);
-        Route::group(['prefix' =>'{task}'], function() {
-            Route::get('', [TaskController::class, 'show']);
-            Route::post('', [TaskController::class, 'create']);
-            Route::put('', [TaskController::class, 'update']);
-            Route::delete('', [TaskController::class, 'delete']);
+        Route::group(['prefix' =>'task'], function() {
+            Route::get('', [TaskController::class, 'index']);
+            Route::group(['prefix' =>'{task}'], function() {
+                Route::get('', [TaskController::class, 'show']);
+                Route::post('', [TaskController::class, 'create']);
+                Route::put('', [TaskController::class, 'update']);
+                Route::delete('', [TaskController::class, 'delete']);
+            });
         });
     });
 });
